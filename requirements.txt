@@ -1,0 +1,6 @@
+# Minimal Python dependency file to satisfy MCP build tooling.
+# The project is implemented in Go, but some deployment platforms detect Python projects
+# by looking for a dependency file. They expect the 'fastmcp' package declared.
+# This file ensures the build system installs fastmcp without changing runtime behavior.
+
+fastmcp
