@@ -69,5 +69,24 @@ def main() -> None:
     print(f"tutor_mcp_adapter: exec -> {args}", file=sys.stderr)
     os.execv(binary, args)  # never returns unless exec fails
 
+# -----------------------------------------------------------------------------
+# fastmcp expects an importable module that exposes a top-level server object
+# under one of the standard names: `mcp`, `server`, or `app`. The adapter is a
+# thin wrapper that execs the compiled Go binary at runtime, so there isn't a
+# real Python server instance to expose. To satisfy `fastmcp inspect` (which
+# only needs to discover the entrypoint name), provide a minimal sentinel
+# object at module scope named `mcp` and aliases `server`/`app`. This avoids
+# changing build tooling (Dockerfile) while keeping runtime behavior the same.
+# -----------------------------------------------------------------------------
+class _AdapterEntryPoint:
+    """Minimal sentinel object used only for tooling discovery (fastmcp)."""
+    def __repr__(self) -> str:  # pragma: no cover - trivially testable
+        return "<tutor_mcp_adapter.entrypoint (placeholder)>"
+
+# Expose the sentinel under the conventional names fastmcp looks for.
+mcp = _AdapterEntryPoint()
+server = mcp
+app = mcp
+
 if __name__ == "__main__":
     main()
