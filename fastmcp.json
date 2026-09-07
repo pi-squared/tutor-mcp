@@ -1,0 +1,3 @@
+{
+  "entrypoint": "tutor_mcp_adapter.py:mcp"
+}
